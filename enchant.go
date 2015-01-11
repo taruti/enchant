@@ -106,10 +106,9 @@ func (d Dict) Check(word string) bool {
 	cWord := C.CString(word)
 	defer C.free(unsafe.Pointer(cWord))
 
-	size := uintptr(len(word))
-	s := (*C.ssize_t)(unsafe.Pointer(&size))
+	size := C.ssize_t(uintptr(len(word)))
 
-	return C.enchant_dict_check(d.dict, cWord, *s) == 0
+	return C.enchant_dict_check(d.dict, cWord, size) == 0
 }
 
 // Suggest words based on the given word.
