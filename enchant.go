@@ -103,9 +103,7 @@ func (d Dict) Check(word string) bool {
 		return true
 	}
 
-	cWord := C.CString(word)
-	defer C.free(unsafe.Pointer(cWord))
-
+	cWord := unsafe.Pointer(&word[0])
 	size := C.ssize_t(uintptr(len(word)))
 
 	return C.enchant_dict_check(d.dict, cWord, size) == 0
