@@ -1,6 +1,8 @@
 Go-Enchant
 ==========
 
+This is a fork of https://github.com/hermanschaaf/enchant with a different API for using multiple dictionaries at a time.
+
 Go-Enchant provides bindings for the C [Enchant Spellcheck Library](http://www.abisource.com/projects/enchant/) in Go. Instead of offering direct mappings to the Enchant functions, it abstracts away some complexity and makes it easier to do resource management in Go.
 
 ### Installation
@@ -44,16 +46,20 @@ func main() {
 
 	// load the english dictionary:
 	if has_en {
-		enchant.LoadDict("en_GB")
+		d, err := enchant.LoadDict("en_GB")
+		if err != nil {
+		   panic("Enchant error: " + err.Error())
+		}
+		defer enchant.FreeDict(d)
 
 		// see if a word is in the dictionary:
-		fmt.Println("hallo:", enchant.Check("hallo"))
+		fmt.Println("hallo:", d.Check("hallo"))
 
 		// and one that won't be in there:
-		fmt.Println("wollo:", enchant.Check("wollo"))
+		fmt.Println("wollo:", d.Check("wollo"))
 
 		// now let's get some suggestions for "wollo":
-		fmt.Println(enchant.Suggest("wollo"))
+		fmt.Println(d.Suggest("wollo"))
 	}
 }
 ```
