@@ -16,6 +16,7 @@ import "C"
 
 import (
 	"errors"
+	"reflect"
 	"unsafe"
 )
 
@@ -103,7 +104,7 @@ func (d Dict) Check(word string) bool {
 		return true
 	}
 
-	cWord := unsafe.Pointer(&word[0])
+	cWord := (*C.char)(unsafe.Pointer((*reflect.StringHeader)(unsafe.Pointer(&word)).Data))
 	size := C.ssize_t(uintptr(len(word)))
 
 	return C.enchant_dict_check(d.dict, cWord, size) == 0
